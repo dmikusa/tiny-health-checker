@@ -15,15 +15,23 @@ impl THC {
     }
 
     pub fn exec(self) -> Result<()> {
-        let parser = args::Parser::new(env::args().collect());
-        let url = parser.validate()?.parse()?;
+        match args::Parser::new(env::args().collect()).validate() {
+            Ok(p) => {
+                let resp = self.agent.get(&p.parse()?).call()?;
+                if resp.status() >= 200 || resp.status() < 300 {
+                    return Ok(());
+                }
 
-        let resp = self.agent.get(&url).call()?;
-        if resp.status() >= 200 || resp.status() < 300 {
-            return Ok(());
+                bail!("invalid response code {}", resp.status())
+            }
+            Err(err) => {
+                let msg = err.to_string();
+                if !msg.is_empty() {
+                    bail!(msg)
+                }
+                Ok(())
+            }
         }
-
-        bail!("invalid response code {}", resp.status())
     }
 
     fn configure_agent() -> Result<ureq::Agent> {
