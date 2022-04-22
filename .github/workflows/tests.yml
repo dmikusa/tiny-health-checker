@@ -202,7 +202,7 @@ jobs:
       - uses: actions/upload-artifact@master
         with:
           name: thc-${{ matrix.target }}
-          path: ./target/release/thc${{ matrix.suffix }}
+          path: ./target/release/${{ matrix.target }}/thc${{ matrix.suffix }}
   release:
     if: github.ref == 'refs/heads/main'
     needs:
