@@ -227,6 +227,10 @@ jobs:
           path: thc-x86_64-unknown-linux-gnu
       - uses: actions/download-artifact@master
         with:
+          name: thc-x86_64-unknown-linux-musl
+          path: thc-x86_64-unknown-linux-musl
+      - uses: actions/download-artifact@master
+        with:
           name: thc-x86_64-apple-darwin
           path: thc-x86_64-apple-darwin
       - uses: actions/download-artifact@master
@@ -270,6 +274,14 @@ jobs:
           upload_url: '${{ steps.create_release.outputs.upload_url }}'
           asset_path: ./thc-x86_64-unknown-linux-gnu/thc
           asset_name: thc-x86_64-unknown-linux-gnu
+          asset_content_type: application/octet-stream
+      - uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+        with:
+          upload_url: '${{ steps.create_release.outputs.upload_url }}'
+          asset_path: ./thc-x86_64-unknown-linux-musl/thc
+          asset_name: thc-x86_64-unknown-linux-musl
           asset_content_type: application/octet-stream
       - uses: actions/upload-release-asset@v1.0.1
         env:
