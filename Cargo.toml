@@ -11,3 +11,8 @@ anyhow = "1.0"
 [dependencies.ureq]
 version = "2.4"
 default-features = false
+
+[profile.release]
+opt-level = "s"
+lto = "fat"
+strip = "symbols"
