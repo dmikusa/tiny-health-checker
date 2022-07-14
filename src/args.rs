@@ -39,18 +39,18 @@ impl Config {
     }
 
     pub fn usage() {
-        eprintln!("USAGE:");
-        eprintln!("\tthc");
-        eprintln!();
-        eprintln!("ENV:");
-        eprintln!();
-        eprintln!("\tTHC_PORT sets the port to which a connection will be made, default: 8080");
-        eprintln!("\tTHC_PATH sets the path to which a connection will be made, default `/`");
-        eprintln!("\tCONN_TIMEOUT sets the connection timeout, default: 10");
-        eprintln!("\tREQ_TIMEOUT sets the request timeout, defaults: 15");
-        eprintln!();
-        eprintln!("\t**NOTE** Host is not configurable and will always be localhost");
-        eprintln!();
+        println!("USAGE:");
+        println!("\tthc");
+        println!();
+        println!("ENV:");
+        println!();
+        println!("\tTHC_PORT sets the port to which a connection will be made, default: 8080");
+        println!("\tTHC_PATH sets the path to which a connection will be made, default `/`");
+        println!("\tCONN_TIMEOUT sets the connection timeout, default: 10");
+        println!("\tREQ_TIMEOUT sets the request timeout, defaults: 15");
+        println!();
+        println!("\t**NOTE** Host is not configurable and will always be localhost");
+        println!();
     }
 }
 

@@ -40,7 +40,7 @@ impl THC {
     pub fn exec(self) -> Result<(), Error> {
         if env::args().len() > 1 {
             Config::usage();
-            process::exit(1);
+            process::exit(0);
         }
 
         let resp = self.agent.get(&self.config.url()).call()?;
