@@ -5,9 +5,6 @@ edition = "2021"
 authors = ["Daniel Mikusa <dmikusa@vmware.com>"]
 description = "A tiny health checker for use in containers with Docker health checks"
 
-[dependencies]
-anyhow = "1.0"
-
 [dependencies.ureq]
 version = "2.4"
 default-features = false
@@ -16,3 +13,6 @@ default-features = false
 opt-level = "s"
 lto = "fat"
 strip = "symbols"
+
+[dev-dependencies]
+temp-env = "0.2"

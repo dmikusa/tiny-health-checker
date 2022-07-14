@@ -1,6 +1,12 @@
-use anyhow::Result;
+use std::process;
+
 use tiny_health_checker::THC;
 
-fn main() -> Result<()> {
-    THC::new()?.exec()
+fn main() {
+    if let Err(err) = THC::new().exec() {
+        eprintln!("Error:");
+        eprintln!("{}", err);
+        eprintln!();
+        process::exit(1);
+    }
 }

@@ -12,15 +12,12 @@ The tiny health checker is a small binary that can only make HTTP requests to lo
 
 ```
 USAGE:
-	thc [port] [path]
-
-ARGS:
-
-	port is the port to which a connection will be made, default: 8080
-	path is the path to which a connection will be made, default: /
+	thc
 
 ENV:
 
+	THC_PORT sets the port to which a connection will be made, default: 8080
+	THC_PATH sets the path to which a connection will be made, default `/`
 	CONN_TIMEOUT sets the connection timeout, default: 10
 	REQ_TIMEOUT sets the request timeout, defaults: 15
 
@@ -38,11 +35,13 @@ thc
 Connects to `http://localhost:9090/`.
 
 ```
-thc 9090
+THC_PORT=9090 thc
 ```
 
 Connects to `http://localhost:9090/foo`.
 
 ```
-thc 9090 /foo
+THC_PORT=9090 THC_PATH=/foo thc
 ```
+
+* the leading slash (`/`) is optional
