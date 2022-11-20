@@ -70,16 +70,16 @@ checksum = "d4fd5641d01c8f18a23da7b6fe29298ff4b55afcccdf78973b24cf3175fee32e"
 
 [[package]]
 name = "temp-env"
-version = "0.2.0"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "45107136c2ddf8c4b87453c02294fd0adf41751796e81e8ba3f7fd951977ab57"
+checksum = "a30d48359f77fbb6af3d7b928cc2d092e1dc90b44f397e979ef08ae15733ed65"
 dependencies = [
  "once_cell",
 ]
 
 [[package]]
 name = "tiny-health-checker"
-version = "0.5.0"
+version = "0.6.0"
 dependencies = [
  "temp-env",
  "ureq",

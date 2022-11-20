@@ -15,4 +15,4 @@ lto = "fat"
 strip = "symbols"
 
 [dev-dependencies]
-temp-env = "0.2"
+temp-env = "0.3"
