@@ -73,7 +73,7 @@ dependencies = [
 
 [[package]]
 name = "tiny-health-checker"
-version = "0.7.0"
+version = "0.8.0"
 dependencies = [
  "temp-env",
  "ureq",
@@ -111,9 +111,9 @@ dependencies = [
 
 [[package]]
 name = "ureq"
-version = "2.6.1"
+version = "2.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "733b5ad78377302af52c0dbcb2623d78fe50e4b3bf215948ff29e9ee031d8566"
+checksum = "338b31dd1314f68f3aabf3ed57ab922df95ffcd902476ca7ba3c4ce7b908c46d"
 dependencies = [
  "base64",
  "log",
