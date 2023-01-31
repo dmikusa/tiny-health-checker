@@ -19,7 +19,7 @@ impl Config {
                     if p.starts_with('/') {
                         p
                     } else {
-                        format!("/{}", p)
+                        format!("/{p}")
                     }
                 })
                 .unwrap_or_else(|_| "/".into()),
