@@ -9,8 +9,8 @@ pub enum Error {
 impl Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Error::RequestError(err) => writeln!(f, "request error: {}", err),
-            Error::InvalidResponseCode(code) => writeln!(f, "bad response code: {}", code),
+            Error::RequestError(err) => writeln!(f, "request error: {err}"),
+            Error::InvalidResponseCode(code) => writeln!(f, "bad response code: {code}"),
         }
     }
 }
