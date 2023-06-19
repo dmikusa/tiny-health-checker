@@ -6,7 +6,7 @@ authors = ["Daniel Mikusa <dmikusa@vmware.com>"]
 description = "A tiny health checker for use in containers with Docker health checks"
 
 [dependencies.ureq]
-version = "2.6"
+version = "2.7"
 default-features = false
 
 [profile.release]
