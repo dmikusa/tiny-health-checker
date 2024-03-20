@@ -5,9 +5,9 @@ edition = "2021"
 authors = ["Daniel Mikusa <dmikusa@vmware.com>"]
 description = "A tiny health checker for use in containers with Docker health checks"
 
-[dependencies.ureq]
-version = "2.9"
-default-features = false
+[dependencies]
+rustls = "0.22"
+ureq = { version = "2.9", features = ["tls"] }
 
 [profile.release]
 opt-level = "s"

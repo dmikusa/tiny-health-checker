@@ -5,10 +5,17 @@ pub struct Config {
     path: String,
     pub connect_timeout: u64,
     pub request_timeout: u64,
+    scheme: String,
 }
 
 impl Config {
     pub fn new() -> Config {
+        let scheme: String = match env::var("THC_SCHEME") {
+            Ok(s) if s == "http" || s == "https" => s,
+            Ok(_) => panic!("invalid THC_SCHEME. It should be either 'http' or 'https'."),
+            Err(_) => "http".into(), // Default to http if not set
+        };
+
         Config {
             port: env::var("THC_PORT")
                 .unwrap_or_else(|_| "8080".into())
@@ -31,11 +38,12 @@ impl Config {
                 .unwrap_or_else(|_| "15".into())
                 .parse()
                 .expect("invalid request timeout"),
+            scheme,
         }
     }
 
     pub fn url(&self) -> String {
-        format!("http://localhost:{}{}", self.port, self.path)
+        format!("{}://localhost:{}{}", self.scheme, self.port, self.path)
     }
 
     pub fn usage() {
@@ -48,6 +56,7 @@ impl Config {
         println!("\tTHC_PATH sets the path to which a connection will be made, default `/`");
         println!("\tCONN_TIMEOUT sets the connection timeout, default: 10");
         println!("\tREQ_TIMEOUT sets the request timeout, defaults: 15");
+        println!("\tTHC_SCHEME sets the protocol scheme of the url ('http' or 'https'), default: http");
         println!();
         println!("\t**NOTE** Host is not configurable and will always be localhost");
         println!();
@@ -91,6 +100,53 @@ mod tests {
             vec![("THC_PORT", Some("8081")), ("THC_PATH", Some("foo"))],
             || {
                 assert_eq!(Config::new().url(), "http://localhost:8081/foo");
+            },
+        );
+    }
+
+    #[test]
+    fn it_parses_default_scheme() {
+        temp_env::with_vars_unset(vec!["THC_SCHEME", "THC_PORT", "THC_PATH"], || {
+            assert_eq!(Config::new().url(), "http://localhost:8080/");
+        });
+    }
+
+    #[test]
+    fn it_parses_http_scheme() {
+        temp_env::with_vars(
+            vec![
+                ("THC_PORT", Some("8081")),
+                ("THC_PATH", Some("foo")),
+                ("THC_SCHEME", Some("http")),
+            ],
+            || {
+                assert_eq!(Config::new().url(), "http://localhost:8081/foo");
+            },
+        );
+    }
+
+    #[test]
+    fn it_parses_https_scheme() {
+        temp_env::with_vars(vec![("THC_PORT", Some("8081")),
+        ("THC_PATH", Some("foo")),
+        ("THC_SCHEME", Some("https")),], || {
+            assert_eq!(Config::new().url(), "https://localhost:8081/foo");
+        });
+    }
+
+    #[test]
+    #[should_panic(
+        expected = "invalid THC_SCHEME. It should be either 'http' or 'https'."
+    )]
+    fn it_panics_on_invalid_scheme() {
+        temp_env::with_vars(
+            vec![
+                ("THC_PORT", Some("8081")),
+                ("THC_PATH", Some("foo")),
+                ("THC_SCHEME", Some("ftp")),
+            ],
+            || {
+                Config::new();
             },
         );
     }
