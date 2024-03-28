@@ -138,6 +138,9 @@ jobs:
           - os: macos-latest
             target: x86_64-apple-darwin
             suffix: ""
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            suffix: ""
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
             suffix: ""
@@ -261,6 +264,10 @@ jobs:
           path: thc-x86_64-apple-darwin
       - uses: actions/download-artifact@master
         with:
+          name: aarch64-apple-darwin
+          path: aarch64-apple-darwin
+      - uses: actions/download-artifact@master
+        with:
           name: thc-x86_64-pc-windows-msvc
           path: thc-x86_64-pc-windows-msvc
       - uses: actions-rs/toolchain@v1
@@ -314,8 +321,32 @@ jobs:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         with:
           upload_url: "${{ steps.create_release.outputs.upload_url }}"
+          asset_path: ./thc-aarch64-unknown-linux-gnu/thc
+          asset_name: thc-aarch64-unknown-linux-gnu
+          asset_content_type: application/octet-stream
+      - uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        with:
+          upload_url: "${{ steps.create_release.outputs.upload_url }}"
+          asset_path: ./thc-aarch64-unknown-linux-musl/thc
+          asset_name: thc-aarch64-unknown-linux-musl
+          asset_content_type: application/octet-stream
+      - uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        with:
+          upload_url: "${{ steps.create_release.outputs.upload_url }}"
           asset_path: ./thc-x86_64-apple-darwin/thc
           asset_name: thc-x86_64-apple-darwin
+          asset_content_type: application/octet-stream
+      - uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        with:
+          upload_url: "${{ steps.create_release.outputs.upload_url }}"
+          asset_path: ./aarch64-apple-darwin/thc
+          asset_name: aarch64-apple-darwin
           asset_content_type: application/octet-stream
       - uses: actions/upload-release-asset@v1.0.2
         env:
