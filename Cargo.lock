@@ -134,7 +134,7 @@ dependencies = [
 
 [[package]]
 name = "tiny-health-checker"
-version = "0.21.0"
+version = "0.22.0"
 dependencies = [
  "temp-env",
  "ureq",
