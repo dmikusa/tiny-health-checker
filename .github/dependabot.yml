@@ -6,3 +6,7 @@ updates:
       interval: "weekly"
     labels:
       - dependency-upgrade
+  - package-ecosystem: "github-actions" # See documentation for possible values
+    directory: "/" # Location of package manifests
+    schedule:
+      interval: "weekly"
