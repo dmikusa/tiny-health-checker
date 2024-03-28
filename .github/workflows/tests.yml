@@ -345,8 +345,8 @@ jobs:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         with:
           upload_url: "${{ steps.create_release.outputs.upload_url }}"
-          asset_path: ./aarch64-apple-darwin/thc
-          asset_name: aarch64-apple-darwin
+          asset_path: ./thc-aarch64-apple-darwin/thc
+          asset_name: thc-aarch64-apple-darwin
           asset_content_type: application/octet-stream
       - uses: actions/upload-release-asset@v1.0.2
         env:
