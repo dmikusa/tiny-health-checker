@@ -264,8 +264,8 @@ jobs:
           path: thc-x86_64-apple-darwin
       - uses: actions/download-artifact@master
         with:
-          name: aarch64-apple-darwin
-          path: aarch64-apple-darwin
+          name: thc-aarch64-apple-darwin
+          path: thc-aarch64-apple-darwin
       - uses: actions/download-artifact@master
         with:
           name: thc-x86_64-pc-windows-msvc
