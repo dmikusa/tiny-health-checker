@@ -1,4 +1,4 @@
-use std::env;
+use std::{env, process};
 
 pub struct Config {
     port: u32,
@@ -8,7 +8,12 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn new() -> Config {
+    pub fn new(args: &[String]) -> Config {
+        if args.len() > 1 {
+            Config::usage();
+            process::exit(0);
+        }
+
         Config {
             port: env::var("THC_PORT")
                 .unwrap_or_else(|_| "8080".into())
@@ -61,7 +66,7 @@ mod tests {
     #[test]
     fn it_parses_default_url() {
         temp_env::with_vars_unset(vec!["THC_PORT", "THC_PATH"], || {
-            assert_eq!(Config::new().url(), "http://localhost:8080/");
+            assert_eq!(Config::new(&[]).url(), "http://localhost:8080/");
         });
     }
 
@@ -70,7 +75,7 @@ mod tests {
         temp_env::with_vars(
             vec![("THC_PORT", Some("8081")), ("THC_PATH", None::<&str>)],
             || {
-                assert_eq!(Config::new().url(), "http://localhost:8081/");
+                assert_eq!(Config::new(&[]).url(), "http://localhost:8081/");
             },
         );
     }
@@ -80,7 +85,7 @@ mod tests {
         temp_env::with_vars(
             vec![("THC_PORT", Some("8081")), ("THC_PATH", Some("/foo"))],
             || {
-                assert_eq!(Config::new().url(), "http://localhost:8081/foo");
+                assert_eq!(Config::new(&[]).url(), "http://localhost:8081/foo");
             },
         );
     }
@@ -90,7 +95,7 @@ mod tests {
         temp_env::with_vars(
             vec![("THC_PORT", Some("8081")), ("THC_PATH", Some("foo"))],
             || {
-                assert_eq!(Config::new().url(), "http://localhost:8081/foo");
+                assert_eq!(Config::new(&[]).url(), "http://localhost:8081/foo");
             },
         );
     }
