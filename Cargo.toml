@@ -16,3 +16,4 @@ strip = "symbols"
 
 [dev-dependencies]
 temp-env = "0.3"
+httpmock = "0.7"
