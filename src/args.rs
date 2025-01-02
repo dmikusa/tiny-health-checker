@@ -5,6 +5,7 @@ pub struct Config {
     path: String,
     pub connect_timeout: u64,
     pub request_timeout: u64,
+    use_loopback_addr: bool,
 }
 
 impl Config {
@@ -36,11 +37,17 @@ impl Config {
                 .unwrap_or_else(|_| "15".into())
                 .parse()
                 .expect("invalid request timeout"),
+            use_loopback_addr: env::var("THC_USE_LOOPBACK_ADDRESS")
+                .unwrap_or_else(|_| "false".into())
+                .parse()
+                .expect("THC_USE_LOOPBACK_ADDRESS must be 'true' or 'false' if specified"), 
+
         }
     }
 
     pub fn url(&self) -> String {
-        format!("http://localhost:{}{}", self.port, self.path)
+        let host = if self.use_loopback_addr { "127.0.0.1" } else { "localhost" };
+        format!("http://{}:{}{}", host, self.port, self.path)
     }
 
     pub fn usage() {
@@ -50,11 +57,12 @@ impl Config {
         println!("ENV:");
         println!();
         println!("\tTHC_PORT sets the port to which a connection will be made, default: 8080");
-        println!("\tTHC_PATH sets the path to which a connection will be made, default `/`");
-        println!("\tCONN_TIMEOUT sets the connection timeout, default: 10");
-        println!("\tREQ_TIMEOUT sets the request timeout, defaults: 15");
+        println!("\tTHC_PATH sets the path to which a connection will be made, default: `/`");
+        println!("\tTHC_CONN_TIMEOUT sets the connection timeout, default: 10");
+        println!("\tTHC_REQ_TIMEOUT sets the request timeout, default: 15");
+        println!("\tTHC_USE_LOOPBACK_ADDRESS 'true' to use 127.0.0.1 in place of 'localhost', default: `false`");
         println!();
-        println!("\t**NOTE** Host is not configurable and will always be localhost");
+        println!("\t**NOTE** Host is not configurable and will always be localhost (or 127.0.0.1)");
         println!();
     }
 }
@@ -99,4 +107,15 @@ mod tests {
             },
         );
     }
+
+    #[test]
+    fn it_parses_loopback_adress_override() {
+        temp_env::with_vars(
+            vec![("THC_USE_LOOPBACK_ADDRESS", Some("true"))],
+            || {
+                assert_eq!(Config::new(&[]).url(), "http://127.0.0.1:8080/");
+            },
+        );
+    }
+
 }
