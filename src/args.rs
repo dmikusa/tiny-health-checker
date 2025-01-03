@@ -40,13 +40,16 @@ impl Config {
             use_loopback_addr: env::var("THC_USE_LOOPBACK_ADDRESS")
                 .unwrap_or_else(|_| "false".into())
                 .parse()
-                .expect("THC_USE_LOOPBACK_ADDRESS must be 'true' or 'false' if specified"), 
-
+                .expect("THC_USE_LOOPBACK_ADDRESS must be 'true' or 'false' if specified"),
         }
     }
 
     pub fn url(&self) -> String {
-        let host = if self.use_loopback_addr { "127.0.0.1" } else { "localhost" };
+        let host = if self.use_loopback_addr {
+            "127.0.0.1"
+        } else {
+            "localhost"
+        };
         format!("http://{}:{}{}", host, self.port, self.path)
     }
 
@@ -110,12 +113,8 @@ mod tests {
 
     #[test]
     fn it_parses_loopback_adress_override() {
-        temp_env::with_vars(
-            vec![("THC_USE_LOOPBACK_ADDRESS", Some("true"))],
-            || {
-                assert_eq!(Config::new(&[]).url(), "http://127.0.0.1:8080/");
-            },
-        );
+        temp_env::with_vars(vec![("THC_USE_LOOPBACK_ADDRESS", Some("true"))], || {
+            assert_eq!(Config::new(&[]).url(), "http://127.0.0.1:8080/");
+        });
     }
-
 }
