@@ -6,7 +6,7 @@ authors = ["Daniel Mikusa <dan@mikusa.com>"]
 description = "A tiny health checker for use in containers with Docker health checks"
 
 [dependencies.ureq]
-version = "2.12"
+version = "3.0"
 default-features = false
 
 [profile.release]

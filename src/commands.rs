@@ -1,3 +1,5 @@
+use ureq::Agent;
+
 use crate::args::Config;
 use std::{fmt::Display, time::Duration};
 
@@ -29,10 +31,11 @@ pub struct THC {
 impl THC {
     pub fn new(args: &[String]) -> THC {
         let config = Config::new(args);
-        let agent = ureq::builder()
-            .timeout_connect(Duration::from_secs(config.connect_timeout))
-            .timeout(Duration::from_secs(config.request_timeout))
-            .build();
+        let agent = Agent::config_builder()
+            .timeout_connect(Some(Duration::from_secs(config.connect_timeout)))
+            .timeout_global(Some(Duration::from_secs(config.request_timeout)))
+            .build()
+            .into();
 
         THC { config, agent }
     }
@@ -40,13 +43,13 @@ impl THC {
     pub fn exec(self) -> Result<(), Error> {
         let result = self.agent.get(&self.config.url()).call();
         match result {
-            Err(ureq::Error::Status(status, _)) => Err(Error::InvalidResponseCode(status)),
+            Err(ureq::Error::StatusCode(status)) => Err(Error::InvalidResponseCode(status)),
             Err(err) => Err(Error::RequestError(Box::new(err))),
             Ok(resp) => {
-                if resp.status() >= 200 && resp.status() < 300 {
+                if resp.status().is_success() {
                     return Ok(());
                 }
-                Err(Error::InvalidResponseCode(resp.status()))
+                Err(Error::InvalidResponseCode(resp.status().as_u16()))
             }
         }
     }
@@ -85,6 +88,24 @@ mod tests {
         })
     }
 
+    fn mock_redirect<'a>(
+        server: &'a MockServer,
+        path: &'a str,
+        status: u16,
+        to_path: &'a str,
+    ) -> Mock<'a> {
+        server.mock(|when, then| {
+            when.method(GET).path(path);
+            then.status(status)
+                .header("content-type", "text/plain")
+                .header(
+                    "location",
+                    format!("http://localhost:{}{}", server.port(), to_path),
+                )
+                .body("OK");
+        })
+    }
+
     #[test]
     pub fn it_gets_200_response() {
         mock_server(|server| {
@@ -118,20 +139,16 @@ mod tests {
     #[test]
     pub fn it_gets_302_response() {
         mock_server(|server| {
-            let mock = mock_response(&server, "/", 302);
+            let mock_redirect = mock_redirect(&server, "/", 302, "/foo");
+            let mock_response = mock_response(&server, "/foo", 200);
 
             let thc = THC::new(&[]);
 
             let result = thc.exec();
+            assert!(result.is_ok(), "request failed {}", result.unwrap_err());
 
-            assert!(result.is_err(), "request was ok");
-
-            match result.unwrap_err() {
-                Error::InvalidResponseCode(code) => assert_eq!(code, 302),
-                Error::RequestError(err) => assert!(false, "unexpected ureq err -> {}", err),
-            }
-
-            mock.assert();
+            mock_redirect.assert();
+            mock_response.assert();
         });
     }
 
