@@ -6,7 +6,25 @@ updates:
       interval: "weekly"
     labels:
       - dependency-upgrade
+    groups:
+      cargo:
+        patterns:
+          - "*"
+        # group all minor and patch dependency updates together
+        update-types:
+          - "minor"
+          - "patch"
   - package-ecosystem: "github-actions" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
+    allow:
+      - dependency-type: "all"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+        # group all minor and patch dependency updates together
+        update-types:
+          - "minor"
+          - "patch"
