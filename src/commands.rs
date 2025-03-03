@@ -63,7 +63,7 @@ impl Default for THC {
 
 #[cfg(test)]
 mod tests {
-    use httpmock::{prelude::*, Mock};
+    use httpmock::{Mock, prelude::*};
 
     use crate::Error;
 
