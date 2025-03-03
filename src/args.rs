@@ -63,7 +63,9 @@ impl Config {
         println!("\tTHC_PATH sets the path to which a connection will be made, default: `/`");
         println!("\tTHC_CONN_TIMEOUT sets the connection timeout, default: 10");
         println!("\tTHC_REQ_TIMEOUT sets the request timeout, default: 15");
-        println!("\tTHC_USE_LOOPBACK_ADDRESS 'true' to use 127.0.0.1 in place of 'localhost', default: `false`");
+        println!(
+            "\tTHC_USE_LOOPBACK_ADDRESS 'true' to use 127.0.0.1 in place of 'localhost', default: `false`"
+        );
         println!();
         println!("\t**NOTE** Host is not configurable and will always be localhost (or 127.0.0.1)");
         println!();
