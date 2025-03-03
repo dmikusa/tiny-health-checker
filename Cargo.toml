@@ -4,15 +4,21 @@ version = "0.36.0"
 edition = "2021"
 authors = ["Daniel Mikusa <dan@mikusa.com>"]
 description = "A tiny health checker for use in containers with Docker health checks"
+repository = "https://github.com/dmikusa/tiny-health-checker"
 
 [dependencies.ureq]
-version = "2.12"
+version = "3.0"
 default-features = false
 
 [profile.release]
 opt-level = "s"
 lto = "fat"
 strip = "symbols"
+
+# The profile that 'dist' will build with
+[profile.dist]
+inherits = "release"
+lto = "thin"
 
 [dev-dependencies]
 temp-env = "0.3"
