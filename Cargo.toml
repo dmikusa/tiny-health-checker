@@ -7,7 +7,7 @@ description = "A tiny health checker for use in containers with Docker health ch
 repository = "https://github.com/dmikusa/tiny-health-checker"
 
 [dependencies.ureq]
-version = "3.0"
+version = "3.1"
 default-features = false
 
 # The profile that 'dist' will build with
