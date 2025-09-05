@@ -91,12 +91,26 @@ impl Config {
 
 #[cfg(test)]
 mod tests {
+    use std::env;
+
+    use crate::args::Preconfig;
+
     use super::Config;
 
     #[test]
     fn it_parses_default_url() {
         temp_env::with_vars_unset(vec!["THC_PORT", "THC_PATH"], || {
             assert_eq!(Config::new(&[]).url(), "http://localhost:8080/");
+        });
+    }
+
+    #[test]
+    fn it_parses_preconfig_port() {
+        temp_env::with_vars(vec![("THC_PORT_NAME", Some("PORT"))], || {
+            let preconfig = Preconfig {
+                port: env::var("THC_PORT_NAME").unwrap(),
+            };
+            assert_eq!(&preconfig.port, "PORT");
         });
     }
 
