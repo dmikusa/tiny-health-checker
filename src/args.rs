@@ -8,6 +8,10 @@ pub struct Config {
     use_loopback_addr: bool,
 }
 
+pub struct Preconfig {
+    port: String,
+}
+
 impl Config {
     pub fn new(args: &[String]) -> Config {
         if args.len() > 1 {
@@ -15,11 +19,18 @@ impl Config {
             process::exit(0);
         }
 
+        let preconfig = Preconfig {
+            port: env::var("THC_PORT_NAME")
+                .unwrap_or_else(|_| "THC_PORT".into())
+                .parse()
+                .expect("invalid environment variable name on THC_PORT_NAME"),
+        };
+
         Config {
-            port: env::var("THC_PORT")
+            port: env::var(&preconfig.port)
                 .unwrap_or_else(|_| "8080".into())
                 .parse()
-                .expect("invalid port in THC_PORT"),
+                .unwrap_or_else(|_| panic!("invalid port in {}", &preconfig.port)),
             path: env::var("THC_PATH")
                 .map(|p| {
                     if p.starts_with('/') {
@@ -57,6 +68,12 @@ impl Config {
         println!("USAGE:");
         println!("\tthc");
         println!();
+        println!("PRE ENV:");
+        println!();
+        println!(
+            "\tTHC_PORT_NAME sets port environment variable name that is going to be used for the port, default: THC_PORT"
+        );
+        println!();
         println!("ENV:");
         println!();
         println!("\tTHC_PORT sets the port to which a connection will be made, default: 8080");
@@ -74,12 +91,26 @@ impl Config {
 
 #[cfg(test)]
 mod tests {
+    use std::env;
+
+    use crate::args::Preconfig;
+
     use super::Config;
 
     #[test]
     fn it_parses_default_url() {
         temp_env::with_vars_unset(vec!["THC_PORT", "THC_PATH"], || {
             assert_eq!(Config::new(&[]).url(), "http://localhost:8080/");
+        });
+    }
+
+    #[test]
+    fn it_parses_preconfig_port() {
+        temp_env::with_vars(vec![("THC_PORT_NAME", Some("PORT"))], || {
+            let preconfig = Preconfig {
+                port: env::var("THC_PORT_NAME").unwrap(),
+            };
+            assert_eq!(&preconfig.port, "PORT");
         });
     }
 
