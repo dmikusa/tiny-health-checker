@@ -30,7 +30,7 @@ impl Config {
             port: env::var(&preconfig.port)
                 .unwrap_or_else(|_| "8080".into())
                 .parse()
-                .expect(&format!("invalid port in {}", &preconfig.port)),
+                .unwrap_or_else(|_| panic!("invalid port in {}", &preconfig.port))
             path: env::var("THC_PATH")
                 .map(|p| {
                     if p.starts_with('/') {
