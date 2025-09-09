@@ -1,6 +1,6 @@
 [package]
 name = "tiny-health-checker"
-version = "0.38.0"
+version = "0.39.0"
 edition = "2024"
 authors = ["Daniel Mikusa <dan@mikusa.com>"]
 description = "A tiny health checker for use in containers with Docker health checks"
