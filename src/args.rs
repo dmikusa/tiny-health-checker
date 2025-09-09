@@ -8,10 +8,6 @@ pub struct Config {
     use_loopback_addr: bool,
 }
 
-pub struct Preconfig {
-    port: String,
-}
-
 impl Config {
     pub fn new(args: &[String]) -> Config {
         if args.len() > 1 {
@@ -19,18 +15,18 @@ impl Config {
             process::exit(0);
         }
 
-        let preconfig = Preconfig {
-            port: env::var("THC_PORT_NAME")
-                .unwrap_or_else(|_| "THC_PORT".into())
-                .parse()
-                .expect("invalid environment variable name on THC_PORT_NAME"),
-        };
+        let custom_port_env_name = env::var("THC_PORT_NAME").ok();
+        let port = custom_port_env_name
+            .map(|key| {
+                env::var(&key)
+                    .unwrap_or_else(|err| panic!("THC_PORT_NAME was set to '{}', but {}", key, err))
+            })
+            .unwrap_or_else(|| env::var("THC_PORT").unwrap_or(String::from("8080")));
 
         Config {
-            port: env::var(&preconfig.port)
-                .unwrap_or_else(|_| "8080".into())
+            port: port
                 .parse()
-                .unwrap_or_else(|_| panic!("invalid port in {}", &preconfig.port)),
+                .unwrap_or_else(|_| panic!("invalid port value: '{}'", port)),
             path: env::var("THC_PATH")
                 .map(|p| {
                     if p.starts_with('/') {
@@ -68,14 +64,11 @@ impl Config {
         println!("USAGE:");
         println!("\tthc");
         println!();
-        println!("PRE ENV:");
+        println!("ENV:");
         println!();
         println!(
             "\tTHC_PORT_NAME sets port environment variable name that is going to be used for the port, default: THC_PORT"
         );
-        println!();
-        println!("ENV:");
-        println!();
         println!("\tTHC_PORT sets the port to which a connection will be made, default: 8080");
         println!("\tTHC_PATH sets the path to which a connection will be made, default: `/`");
         println!("\tTHC_CONN_TIMEOUT sets the connection timeout, default: 10");
@@ -91,10 +84,6 @@ impl Config {
 
 #[cfg(test)]
 mod tests {
-    use std::env;
-
-    use crate::args::Preconfig;
-
     use super::Config;
 
     #[test]
@@ -105,13 +94,13 @@ mod tests {
     }
 
     #[test]
-    fn it_parses_preconfig_port() {
-        temp_env::with_vars(vec![("THC_PORT_NAME", Some("PORT"))], || {
-            let preconfig = Preconfig {
-                port: env::var("THC_PORT_NAME").unwrap(),
-            };
-            assert_eq!(&preconfig.port, "PORT");
-        });
+    fn it_parses_port_from_custom_env_variable() {
+        temp_env::with_vars(
+            vec![("THC_PORT_NAME", Some("MYPORT")), ("MYPORT", Some("8081"))],
+            || {
+                assert_eq!(Config::new(&[]).url(), "http://localhost:8081/");
+            },
+        );
     }
 
     #[test]
