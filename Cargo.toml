@@ -19,4 +19,4 @@ strip = "symbols"
 
 [dev-dependencies]
 temp-env = "0.3"
-httpmock = "0.8"
+httpmock = "0.9"
